@@ -61,28 +61,28 @@ const semuaPertanyaan = [
     jenis: "Ad Hominem"
   },
   {
-    pertanyaan: "Dalam debat, seseorang berargumen: 'Jika kita melegalkan ganja, selanjutnya semua jenis narkoba akan dilegalkan!' Apakah ini fallacy?", 
+    pertanyaan: "Dalam debat, seseorang berargumen: 'Jika kita melegalkan ganja, selanjutnya semua jenis narkoba akan dilegalkan!' Apakah ini fallacy?",
     jawaban: true,
     bobot: 1,
     jenis: "Slippery Slope"
   },
   {
     pertanyaan: "Iklan sebuah produk mengatakan: 'Semua orang keren menggunakan ini. Anda juga harus membelinya!' Apakah ini fallacy?",
-    jawaban: true, 
+    jawaban: true,
     bobot: 1,
     jenis: "Bandwagon"
   },
   {
     pertanyaan: "Seseorang berpendapat: 'Teori relativitas hanyalah teori, jadi belum terbukti benar.' Apakah ini fallacy?",
     jawaban: true,
-    bobot: 1, 
+    bobot: 1,
     jenis: "Equivocation"
   },
   {
     pertanyaan: "Orangtua berkata pada anaknya: 'Kalau kamu tidak belajar dengan giat, masa depanmu akan suram.' Apakah ini fallacy?",
     jawaban: true,
     bobot: 1,
-    jenis: "False Dilemma" 
+    jenis: "False Dilemma"
   },
   {
     pertanyaan: "Sebuah studi menemukan korelasi positif yang signifikan antara tingkat pendidikan dan pendapatan. Apakah ini fallacy?",
@@ -92,7 +92,7 @@ const semuaPertanyaan = [
   },
   {
     pertanyaan: "Seorang dokter menjelaskan: 'Merokok meningkatkan risiko kanker paru-paru karena zat karsinogenik dalam asap rokok merusak sel-sel paru-paru.' Apakah ini fallacy?",
-    jawaban: false, 
+    jawaban: false,
     bobot: 1,
     jenis: "Valid Causal Reasoning"
   },
@@ -112,7 +112,7 @@ const semuaPertanyaan = [
     pertanyaan: "Dalam kampanye, seorang kandidat berkata: 'Jika lawan saya terpilih, negara kita akan jatuh ke dalam kekacauan!' Apakah ini fallacy?",
     jawaban: true,
     bobot: 1,
-    jenis: "Slippery Slope"  
+    jenis: "Slippery Slope"
   },
   {
     pertanyaan: "Iklan sebuah restoran mengatakan: 'Semua selebriti makan di sini, jadi makanannya pasti enak!' Apakah ini fallacy?",
@@ -338,7 +338,7 @@ const AplikasiTerapiAntiKibul = () => {
   const jawabPertanyaan = (jawaban) => {
     const currentQuestion = pertanyaanFallacy[currentQuestionIndex];
     const isCorrect = jawaban === currentQuestion.jawaban;
-    
+
     if (isCorrect) {
       setScore(score + currentQuestion.bobot);
     } else {
@@ -393,18 +393,18 @@ const AplikasiTerapiAntiKibul = () => {
     const totalQuestions = pertanyaanFallacy.length;
     const correctAnswers = score;
     const incorrectAnswers = totalQuestions - correctAnswers;
-  
+
     return [
       { name: 'Jawaban Benar', value: correctAnswers },
       { name: 'Jawaban Salah', value: incorrectAnswers }
     ];
   };
-  
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-400 via-red-500 to-pink-500 flex flex-col items-center justify-center p-4 font-sans">
       <h1 className="text-4xl font-bold mb-6 text-white text-center animate-pulse ">
-      🧠💊 Terapi Anti Kibul 🧠💊
+        🧠💊 Terapi Anti Kibul 🧠💊
       </h1>
       <Card className={`w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl ${shakeWrong ? 'animate-shake' : ''}`}>
         <CardContent className="p-6 bg-white bg-opacity-90">
@@ -414,9 +414,9 @@ const AplikasiTerapiAntiKibul = () => {
               <p className="text-center text-xl mb-6 font-bold text-red-600">
                 Saudara-saudara! Sudah bosan dibohongi? Ayo ikuti terapi revolusioner ini!
               </p>
-              <Button 
-                onClick={mulaiGame} 
-                variant="outline" 
+              <Button
+                onClick={mulaiGame}
+                variant="outline"
                 className="w-full flex items-center justify-center bg-yellow-500 text-white hover:bg-yellow-600 py-6 text-2xl rounded-full transition-all duration-300 transform hover:scale-105"
               >
                 <Shuffle className="mr-2 h-8 w-8" /> Mulai Terapi Ajaib!
@@ -431,16 +431,16 @@ const AplikasiTerapiAntiKibul = () => {
                 </p>
               </div>
               <div className="flex flex-col gap-4">
-                <Button 
-                  onClick={() => jawabPertanyaan(true)} 
-                  variant="outline" 
+                <Button
+                  onClick={() => jawabPertanyaan(true)}
+                  variant="outline"
                   className="w-full flex items-center justify-center bg-green-500 text-white hover:bg-green-600 py-5 text-xl rounded-full transition-all duration-300 transform hover:scale-105"
                 >
                   <CheckCircle className="mr-2 h-6 w-6" /> Iya, Kibul Itu!
                 </Button>
-                <Button 
-                  onClick={() => jawabPertanyaan(false)} 
-                  variant="outline" 
+                <Button
+                  onClick={() => jawabPertanyaan(false)}
+                  variant="outline"
                   className="w-full flex items-center justify-center bg-red-500 text-white hover:bg-red-600 py-5 text-xl rounded-full transition-all duration-300 transform hover:scale-105"
                 >
                   <XCircle className="mr-2 h-6 w-6" /> Bukan Kibul
@@ -464,35 +464,35 @@ const AplikasiTerapiAntiKibul = () => {
                 {getEvaluasi()}
               </p>
               <div className="w-full h-80 mb-6">
-  <ResponsiveContainer width="100%" height="100%">
-    <PieChart>
-      <Pie
-        data={getFallacyChartData()}
-        dataKey="value"
-        nameKey="name"
-        cx="50%"
-        cy="50%"
-        outerRadius={80}
-        fill="#8884d8"
-        label
-      >
-        {getFallacyChartData().map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={`hsl(${index * 120}, 70%, 60%)`} />
-        ))}
-      </Pie>
-      <Tooltip />
-      <Legend />
-    </PieChart>
-  </ResponsiveContainer>
-</div>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={getFallacyChartData()}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      fill="#8884d8"
+                      label
+                    >
+                      {getFallacyChartData().map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={`hsl(${index * 120}, 70%, 60%)`} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
 
               <p className="text-center text-lg mb-6 text-gray-700">
                 Grafik pie di atas menunjukkan tingkat kerentanan Anda terhadap berbagai jenis fallacy.
                 Semakin besar bagian dari pie, semakin rentan Anda terhadap fallacy tersebut.
               </p>
-              <Button 
-                onClick={mulaiGame} 
-                variant="outline" 
+              <Button
+                onClick={mulaiGame}
+                variant="outline"
                 className="w-full flex items-center justify-center bg-blue-500 text-white hover:bg-blue-600 py-5 text-xl rounded-full transition-all duration-300 transform hover:scale-105"
               >
                 <Shuffle className="mr-2 h-6 w-6" /> Terapi Ulang!
