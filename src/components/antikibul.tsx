@@ -403,6 +403,7 @@ const AplikasiTerapiAntiKibul = () => {
     setIsSubmitDialogOpen(false);
     if (submitted) {
       setIsScoreSubmitted(true);
+      setIsSubmitDialogOpen(false);
     }
   };
 
@@ -483,6 +484,7 @@ const AplikasiTerapiAntiKibul = () => {
         }),
       });
       setIsScoreSubmitted(true);
+      setIsSubmitDialogOpen(false);
       return response;
     } catch (error) {
       console.error('Error submitting score:', error);
@@ -524,6 +526,7 @@ const AplikasiTerapiAntiKibul = () => {
       setGameOver(false);
       setFallacyResults({});
       setIsScoreSubmitted(false);
+      setIsSubmitDialogOpen(false);
     }
   };
 
