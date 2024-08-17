@@ -624,6 +624,9 @@ const AplikasiTerapiAntiKibul = () => {
                 <p className="text-center text-xl font-bold text-red-800">
                   {pertanyaanFallacy[currentQuestionIndex].pertanyaan}
                 </p>
+                <p className="text-center text-lg font-semibold text-blue-700 mt-2">
+                  Apakah statemen ini ngibul?
+                </p>
               </div>
               <div className="flex flex-col gap-4">
                 <Button
@@ -631,14 +634,14 @@ const AplikasiTerapiAntiKibul = () => {
                   variant="outline"
                   className="w-full flex items-center justify-center bg-green-500 text-white hover:bg-green-600 py-5 text-xl rounded-full transition-all duration-300 transform hover:scale-105"
                 >
-                  <CheckCircle className="mr-2 h-6 w-6" /> Iya, Kibul Itu!
+                  <CheckCircle className="mr-2 h-6 w-6" /> Ngibul Nih!
                 </Button>
                 <Button
                   onClick={() => jawabPertanyaan(false)}
                   variant="outline"
                   className="w-full flex items-center justify-center bg-red-500 text-white hover:bg-red-600 py-5 text-xl rounded-full transition-all duration-300 transform hover:scale-105"
                 >
-                  <XCircle className="mr-2 h-6 w-6" /> Bukan Kibul
+                  <XCircle className="mr-2 h-6 w-6" /> Nggak Ngibul
                 </Button>
               </div>
               <div className="flex justify-center items-center mt-6">
