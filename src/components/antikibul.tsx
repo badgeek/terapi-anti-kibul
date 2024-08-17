@@ -380,14 +380,26 @@ const AplikasiTerapiAntiKibul = () => {
     }
   };
 
+  // const getFallacyChartData = () => {
+  //   return Object.entries(fallacyResults)
+  //     .map(([jenis, result]) => {
+  //       const vulnerability = ((result.total - result.correct) / result.total) * 1;
+  //       return vulnerability > 0 ? { name: jenis, vulnerability } : null;
+  //     })
+  //     .filter(Boolean);
+  // };
+
   const getFallacyChartData = () => {
-    return Object.entries(fallacyResults)
-      .map(([jenis, result]) => {
-        const vulnerability = ((result.total - result.correct) / result.total) * 1;
-        return vulnerability > 0 ? { name: jenis, vulnerability } : null;
-      })
-      .filter(Boolean);
+    const totalQuestions = pertanyaanFallacy.length;
+    const correctAnswers = score;
+    const incorrectAnswers = totalQuestions - correctAnswers;
+  
+    return [
+      { name: 'Jawaban Benar', value: correctAnswers },
+      { name: 'Jawaban Salah', value: incorrectAnswers }
+    ];
   };
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-400 via-red-500 to-pink-500 flex flex-col items-center justify-center p-4 font-sans">
@@ -452,27 +464,28 @@ const AplikasiTerapiAntiKibul = () => {
                 {getEvaluasi()}
               </p>
               <div className="w-full h-80 mb-6">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={getFallacyChartData()}
-                      dataKey="vulnerability"
-                      nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      fill="#8884d8"
-                      label
-                    >
-                      {getFallacyChartData().map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={`hsl(${index * 45}, 70%, 60%)`} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+  <ResponsiveContainer width="100%" height="100%">
+    <PieChart>
+      <Pie
+        data={getFallacyChartData()}
+        dataKey="value"
+        nameKey="name"
+        cx="50%"
+        cy="50%"
+        outerRadius={80}
+        fill="#8884d8"
+        label
+      >
+        {getFallacyChartData().map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={`hsl(${index * 120}, 70%, 60%)`} />
+        ))}
+      </Pie>
+      <Tooltip />
+      <Legend />
+    </PieChart>
+  </ResponsiveContainer>
+</div>
+
               <p className="text-center text-lg mb-6 text-gray-700">
                 Grafik pie di atas menunjukkan tingkat kerentanan Anda terhadap berbagai jenis fallacy.
                 Semakin besar bagian dari pie, semakin rentan Anda terhadap fallacy tersebut.
