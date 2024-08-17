@@ -1,8 +1,10 @@
 // @ts-nocheck
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, XCircle, Brain, Shuffle } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { CheckCircle, XCircle, Brain, Shuffle, Send } from 'lucide-react';
 import { PieChart, Pie, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 
 const semuaPertanyaan = [
@@ -296,6 +298,9 @@ const semuaPertanyaan = [
   }
 ];
 
+
+
+
 const AplikasiTerapiAntiKibul = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -304,7 +309,8 @@ const AplikasiTerapiAntiKibul = () => {
   const [shakeWrong, setShakeWrong] = useState(false);
   const [pertanyaanFallacy, setPertanyaanFallacy] = useState([]);
   const [fallacyResults, setFallacyResults] = useState({});
-
+  const [playerName, setPlayerName] = useState('');
+  const [submissionStatus, setSubmissionStatus] = useState(null);
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -319,6 +325,89 @@ const AplikasiTerapiAntiKibul = () => {
       });
     }
   }, []);
+
+const HighScoreSubmission = useMemo(() => {
+  return ({ onSubmit, finalScore }) => {
+    const [playerName, setPlayerName] = useState('');
+    const [submissionStatus, setSubmissionStatus] = useState(null);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const handleSubmit = useCallback(async () => {
+      if (!playerName.trim()) {
+        setSubmissionStatus('error');
+        return;
+      }
+
+    try {
+      const response = await onSubmit(playerName);
+      if (response.ok) {
+        setSubmissionStatus('success');
+        setIsSubmitted(true);
+      } else {
+        setSubmissionStatus('error');
+      }
+    } catch (error) {
+      console.error('Error submitting score:', error);
+      setSubmissionStatus('error');
+    }
+    }, [playerName, onSubmit, isSubmitted]);
+
+    if (isSubmitted) {
+      return (
+        <div className="mb-4">
+          <Alert className="bg-green-100 border-green-400 text-green-700">
+            <AlertDescription>Skor Kamu ({finalScore}) telah berhasil disubmit!</AlertDescription>
+          </Alert>
+        </div>
+      );
+    }
+
+    return (
+      <div className="w-full mb-4">
+        <h3 className="text-xl font-bold mb-2 text-black text-center">🏆 Kirim Skor Kamu 🏆</h3>
+        <Input
+          type="text"
+          placeholder="Enter your name"
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
+          className="mb-2"
+        />
+        <Button 
+          onClick={handleSubmit} 
+          variant="outline"
+          className="w-full flex items-center justify-center bg-blue-500 text-white hover:bg-blue-600 py-5 text-xl rounded-full transition-all duration-300 transform hover:scale-105"
+        >
+          <Send className="mr-2 h-4 w-4" /> Kirim Skor
+        </Button>
+        {submissionStatus === 'error' && (
+          <Alert className="mt-2 bg-red-100 border-red-400 text-red-700">
+            <AlertDescription>Error submitting score. Please try again.</AlertDescription>
+          </Alert>
+        )}
+      </div>
+    );
+  };
+}, []);
+
+
+  const submitHighScore = useCallback(async (playerName) => {
+    try {
+      const response = await fetch('https://webhook.site/dc44ab4c-4ac7-40c3-81f2-3ab44b30eb86', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: playerName,
+          score: score,
+        }),
+      });
+      return response;
+    } catch (error) {
+      console.error('Error submitting score:', error);
+      throw error;
+    }
+  }, [score]);
 
   const shuffleQuestions = () => {
     const shuffled = [...semuaPertanyaan].sort(() => 0.5 - Math.random());
@@ -490,6 +579,7 @@ const AplikasiTerapiAntiKibul = () => {
                 Grafik pie di atas menunjukkan tingkat kerentanan Anda terhadap berbagai jenis fallacy.
                 Semakin besar bagian dari pie, semakin rentan Anda terhadap fallacy tersebut.
               </p>
+              <HighScoreSubmission onSubmit={submitHighScore} finalScore={score} />
               <Button
                 onClick={mulaiGame}
                 variant="outline"
