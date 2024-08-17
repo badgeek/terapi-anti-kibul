@@ -4,8 +4,25 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle, XCircle, Brain, Shuffle, Send } from 'lucide-react';
+import { CheckCircle, XCircle, Brain, Shuffle, Send, Trophy } from 'lucide-react';
 import { PieChart, Pie, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 
 const semuaPertanyaan = [
   {
@@ -326,68 +343,127 @@ const AplikasiTerapiAntiKibul = () => {
     }
   }, []);
 
-const HighScoreSubmission = useMemo(() => {
-  return ({ onSubmit, finalScore }) => {
-    const [playerName, setPlayerName] = useState('');
-    const [submissionStatus, setSubmissionStatus] = useState(null);
-    const [isSubmitted, setIsSubmitted] = useState(false);
+  const HighScoreList = () => {
+    const [scores, setScores] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const handleSubmit = useCallback(async () => {
-      if (!playerName.trim()) {
-        setSubmissionStatus('error');
-        return;
-      }
+    useEffect(() => {
+      // Simulating API call with dummy data
+      const fetchScores = async () => {
+        setIsLoading(true);
+        try {
+          // Dummy data
+          const dummyScores = [
+            { name: "Budi", score: 95 },
+            { name: "Ani", score: 90 },
+            { name: "Citra", score: 85 },
+            { name: "Dodi", score: 80 },
+            { name: "Eka", score: 75 },
+          ];
+          
+          // Simulate API delay
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          setScores(dummyScores);
+        } catch (err) {
+          setError("Failed to fetch high scores");
+        } finally {
+          setIsLoading(false);
+        }
+      };
 
-    try {
-      const response = await onSubmit(playerName);
-      if (response.ok) {
-        setSubmissionStatus('success');
-        setIsSubmitted(true);
-      } else {
-        setSubmissionStatus('error');
-      }
-    } catch (error) {
-      console.error('Error submitting score:', error);
-      setSubmissionStatus('error');
-    }
-    }, [playerName, onSubmit, isSubmitted]);
+      fetchScores();
+    }, []);
 
-    if (isSubmitted) {
-      return (
-        <div className="mb-4">
-          <Alert className="bg-green-100 border-green-400 text-green-700">
-            <AlertDescription>Skor Kamu ({finalScore}) telah berhasil disubmit!</AlertDescription>
-          </Alert>
-        </div>
-      );
-    }
+    if (isLoading) return <p>Memuat daftar skor tertinggi...</p>;
+    if (error) return <p>Error: {error}</p>;
 
     return (
-      <div className="w-full mb-4">
-        <h3 className="text-xl font-bold mb-2 text-black text-center">🏆 Kirim Skor Kamu 🏆</h3>
-        <Input
-          type="text"
-          placeholder="Enter your name"
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
-          className="mb-2"
-        />
-        <Button 
-          onClick={handleSubmit} 
-          variant="outline"
-          className="w-full flex items-center justify-center bg-blue-500 text-white hover:bg-blue-600 py-5 text-xl rounded-full transition-all duration-300 transform hover:scale-105"
-        >
-          <Send className="mr-2 h-4 w-4" /> Kirim Skor
-        </Button>
-        {submissionStatus === 'error' && (
-          <Alert className="mt-2 bg-red-100 border-red-400 text-red-700">
-            <AlertDescription>Error submitting score. Please try again.</AlertDescription>
-          </Alert>
-        )}
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[50px]">Peringkat</TableHead>
+            <TableHead>Nama</TableHead>
+            <TableHead className="text-right">Skor</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {scores.map((score, index) => (
+            <TableRow key={index}>
+              <TableCell className="font-medium">{index + 1}</TableCell>
+              <TableCell>{score.name}</TableCell>
+              <TableCell className="text-right">{score.score}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     );
   };
-}, []);
+
+
+  const HighScoreSubmission = useMemo(() => {
+    return ({ onSubmit, finalScore }) => {
+      const [playerName, setPlayerName] = useState('');
+      const [submissionStatus, setSubmissionStatus] = useState(null);
+      const [isSubmitted, setIsSubmitted] = useState(false);
+
+      const handleSubmit = useCallback(async () => {
+        if (!playerName.trim()) {
+          setSubmissionStatus('error');
+          return;
+        }
+
+        try {
+          const response = await onSubmit(playerName);
+          if (response.ok) {
+            setSubmissionStatus('success');
+            setIsSubmitted(true);
+          } else {
+            setSubmissionStatus('error');
+          }
+        } catch (error) {
+          console.error('Error submitting score:', error);
+          setSubmissionStatus('error');
+        }
+      }, [playerName, onSubmit, isSubmitted]);
+
+      if (isSubmitted) {
+        return (
+          <div className="mb-4">
+            <Alert className="bg-green-100 border-green-400 text-green-700">
+              <AlertDescription>Skor Kamu ({finalScore}) telah berhasil disubmit!</AlertDescription>
+            </Alert>
+          </div>
+        );
+      }
+
+      return (
+        <div className="w-full mb-4">
+          <h3 className="text-xl font-bold mb-2 text-black text-center">🏆 Kirim Skor Kamu 🏆</h3>
+          <Input
+            type="text"
+            placeholder="Enter your name"
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+            className="mb-2"
+          />
+          <Button
+            onClick={handleSubmit}
+            variant="outline"
+            className="w-full flex items-center justify-center bg-blue-500 text-white hover:bg-blue-600 py-5 text-xl rounded-full transition-all duration-300 transform hover:scale-105"
+          >
+            <Send className="mr-2 h-4 w-4" /> Kirim Skor
+          </Button>
+          {submissionStatus === 'error' && (
+            <Alert className="mt-2 bg-red-100 border-red-400 text-red-700">
+              <AlertDescription>Error submitting score. Please try again.</AlertDescription>
+            </Alert>
+          )}
+        </div>
+      );
+    };
+  }, []);
 
 
   const submitHighScore = useCallback(async (playerName) => {
@@ -587,6 +663,25 @@ const HighScoreSubmission = useMemo(() => {
               >
                 <Shuffle className="mr-2 h-6 w-6" /> Terapi Ulang!
               </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    className="mt-4 w-full flex items-center justify-center bg-purple-500 text-white hover:bg-purple-600 py-3 text-lg rounded-full transition-all duration-300 transform hover:scale-105"
+                  >
+                    <Trophy className="mr-2 h-5 w-5" /> Lihat Skor Tertinggi
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Daftar Skor Tertinggi</DialogTitle>
+                    <DialogDescription>
+                      Berikut adalah daftar skor tertinggi dari semua pemain.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <HighScoreList />
+                </DialogContent>
+              </Dialog>
             </div>
           )}
         </CardContent>
