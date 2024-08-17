@@ -328,6 +328,9 @@ const AplikasiTerapiAntiKibul = () => {
   const [fallacyResults, setFallacyResults] = useState({});
   const [playerName, setPlayerName] = useState('');
   const [submissionStatus, setSubmissionStatus] = useState(null);
+  const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false);
+  const [isScoreSubmitted, setIsScoreSubmitted] = useState(false);
+
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -401,6 +404,12 @@ const AplikasiTerapiAntiKibul = () => {
     );
   };
 
+  const handleSubmitDialogClose = (submitted = false) => {
+    setIsSubmitDialogOpen(false);
+    if (submitted) {
+      setIsScoreSubmitted(true);
+    }
+  };
 
   const HighScoreSubmission = useMemo(() => {
     return ({ onSubmit, finalScore }) => {
@@ -440,7 +449,7 @@ const AplikasiTerapiAntiKibul = () => {
 
       return (
         <div className="w-full mb-4">
-          <h3 className="text-xl font-bold mb-2 text-black text-center">🏆 Kirim Skor Kamu 🏆</h3>
+          <h3 className="text-xl font-bold mb-2 text-white text-center">🏆 Kirim Skor Kamu 🏆</h3>
           <Input
             type="text"
             placeholder="Enter your name"
@@ -478,6 +487,7 @@ const AplikasiTerapiAntiKibul = () => {
           score: score,
         }),
       });
+      setIsScoreSubmitted(true);
       return response;
     } catch (error) {
       console.error('Error submitting score:', error);
@@ -498,6 +508,7 @@ const AplikasiTerapiAntiKibul = () => {
     setScore(0);
     setGameOver(false);
     setFallacyResults({});
+    setIsScoreSubmitted(false); // Reset score submission status
   };
 
   const jawabPertanyaan = (jawaban) => {
@@ -655,19 +666,30 @@ const AplikasiTerapiAntiKibul = () => {
                 Grafik pie di atas menunjukkan tingkat kerentanan Anda terhadap berbagai jenis fallacy.
                 Semakin besar bagian dari pie, semakin rentan Anda terhadap fallacy tersebut.
               </p>
-              <HighScoreSubmission onSubmit={submitHighScore} finalScore={score} />
-              <Button
-                onClick={mulaiGame}
-                variant="outline"
-                className="w-full flex items-center justify-center bg-blue-500 text-white hover:bg-blue-600 py-5 text-xl rounded-full transition-all duration-300 transform hover:scale-105"
-              >
-                <Shuffle className="mr-2 h-6 w-6" /> Terapi Ulang!
-              </Button>
+              {!isScoreSubmitted && (
+                <Dialog open={isSubmitDialogOpen} onOpenChange={setIsSubmitDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      className="w-full mb-4 flex items-center justify-center bg-green-500 text-white hover:bg-green-600 py-3 text-lg rounded-full transition-all duration-300 transform hover:scale-105"
+                    >
+                      <Trophy className="mr-2 h-5 w-5" /> 🏆 Submit Skor 🏆
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <HighScoreSubmission 
+                      onSubmit={submitHighScore} 
+                      finalScore={score} 
+                      onClose={handleSubmitDialogClose}
+                    />
+                  </DialogContent>
+                </Dialog>
+              )}
               <Dialog>
                 <DialogTrigger asChild>
                   <Button 
                     variant="outline" 
-                    className="mt-4 w-full flex items-center justify-center bg-purple-500 text-white hover:bg-purple-600 py-3 text-lg rounded-full transition-all duration-300 transform hover:scale-105"
+                    className="mb-4 w-full flex items-center justify-center bg-purple-500 text-white hover:bg-purple-600 py-3 text-lg rounded-full transition-all duration-300 transform hover:scale-105"
                   >
                     <Trophy className="mr-2 h-5 w-5" /> Lihat Skor Tertinggi
                   </Button>
@@ -682,6 +704,13 @@ const AplikasiTerapiAntiKibul = () => {
                   <HighScoreList />
                 </DialogContent>
               </Dialog>
+              <Button
+                onClick={mulaiGame}
+                variant="outline"
+                className="w-full flex items-center justify-center bg-blue-500 text-white hover:bg-blue-600 py-5 text-xl rounded-full transition-all duration-300 transform hover:scale-105"
+              >
+                <Shuffle className="mr-2 h-6 w-6" /> Terapi Ulang!
+              </Button>
             </div>
           )}
         </CardContent>
