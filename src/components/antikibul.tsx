@@ -477,7 +477,7 @@ const AplikasiTerapiAntiKibul = () => {
 
   const submitHighScore = useCallback(async (playerName) => {
     try {
-      const response = await fetch('https://webhook.site/dc44ab4c-4ac7-40c3-81f2-3ab44b30eb86', {
+      const response = await fetch('https://antikibul-be.seo.pawonmburi.com/questions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -663,8 +663,9 @@ const AplikasiTerapiAntiKibul = () => {
               </div>
 
               <p className="text-center text-lg mb-6 text-gray-700">
-                Grafik pie di atas menunjukkan tingkat kerentanan Anda terhadap berbagai jenis fallacy.
-                Semakin besar bagian dari pie, semakin rentan Anda terhadap fallacy tersebut.
+                Grafik pie di atas menunjukkan perbandingan antara jawaban benar dan salah Anda.
+                Bagian yang lebih besar menunjukkan jumlah jawaban yang lebih banyak, baik itu benar atau salah.
+                Ini membantu Anda melihat seberapa akurat kemampuan Anda dalam mengidentifikasi fallacy.
               </p>
               {!isScoreSubmitted && (
                 <Dialog open={isSubmitDialogOpen} onOpenChange={setIsSubmitDialogOpen}>
