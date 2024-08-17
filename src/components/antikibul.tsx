@@ -330,6 +330,8 @@ const AplikasiTerapiAntiKibul = () => {
   const [submissionStatus, setSubmissionStatus] = useState(null);
   const [isSubmitDialogOpen, setIsSubmitDialogOpen] = useState(false);
   const [isScoreSubmitted, setIsScoreSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -352,25 +354,18 @@ const AplikasiTerapiAntiKibul = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-      // Simulating API call with dummy data
       const fetchScores = async () => {
         setIsLoading(true);
         try {
-          // Dummy data
-          const dummyScores = [
-            { name: "Budi", score: 95 },
-            { name: "Ani", score: 90 },
-            { name: "Citra", score: 85 },
-            { name: "Dodi", score: 80 },
-            { name: "Eka", score: 75 },
-          ];
-          
-          // Simulate API delay
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
-          setScores(dummyScores);
+          const response = await fetch('https://antikibul-be.seo.pawonmburi.com/scores');
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          setScores(data);
         } catch (err) {
           setError("Failed to fetch high scores");
+          console.error("Error fetching scores:", err);
         } finally {
           setIsLoading(false);
         }
@@ -477,7 +472,7 @@ const AplikasiTerapiAntiKibul = () => {
 
   const submitHighScore = useCallback(async (playerName) => {
     try {
-      const response = await fetch('https://antikibul-be.seo.pawonmburi.com/questions', {
+      const response = await fetch('https://antikibul-be.seo.pawonmburi.com/scores', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -495,20 +490,41 @@ const AplikasiTerapiAntiKibul = () => {
     }
   }, [score]);
 
+  const fetchQuestions = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('https://antikibul-be.seo.pawonmburi.com/questions');
+      if (!response.ok) {
+        throw new Error('Failed to fetch questions');
+      }
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      setError(err.message);
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const shuffleQuestions = () => {
     const shuffled = [...semuaPertanyaan].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, 5);
   };
 
-  const mulaiGame = () => {
-    const questions = shuffleQuestions();
-    setPertanyaanFallacy(questions);
-    setGameStarted(true);
-    setCurrentQuestionIndex(0);
-    setScore(0);
-    setGameOver(false);
-    setFallacyResults({});
-    setIsScoreSubmitted(false); // Reset score submission status
+  const mulaiGame = async () => {
+    const questions = await fetchQuestions();
+    console.log(questions);
+    if (questions.length > 0) {
+      setPertanyaanFallacy(questions);
+      setGameStarted(true);
+      setCurrentQuestionIndex(0);
+      setScore(0);
+      setGameOver(false);
+      setFallacyResults({});
+      setIsScoreSubmitted(false);
+    }
   };
 
   const jawabPertanyaan = (jawaban) => {
