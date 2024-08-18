@@ -58,7 +58,6 @@ const AplikasiTerapiAntiKibul = () => {
     const [scores, setScores] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-
     useEffect(() => {
       const fetchScores = async () => {
         setIsLoading(true);
@@ -68,7 +67,7 @@ const AplikasiTerapiAntiKibul = () => {
             throw new Error('Network response was not ok');
           }
           const data = await response.json();
-          setScores(data);
+          setScores(data || []); // Handle null response by setting an empty array
         } catch (err) {
           setError("Failed to fetch high scores");
           console.error("Error fetching scores:", err);
@@ -84,24 +83,33 @@ const AplikasiTerapiAntiKibul = () => {
     if (error) return <p>Error: {error}</p>;
 
     return (
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[50px]">Peringkat</TableHead>
-            <TableHead>Nama</TableHead>
-            <TableHead className="text-right">Skor</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {scores.map((score, index) => (
-            <TableRow key={index}>
-              <TableCell className="font-medium">{index + 1}</TableCell>
-              <TableCell>{score.name}</TableCell>
-              <TableCell className="text-right">{score.score}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <>
+        {scores?.length === 0 ? (
+          <div className="text-center py-4">
+            <p className="text-gray-500">Belum ada skor tertinggi yang tercatat.</p>
+            <p className="text-gray-500">Jadilah yang pertama untuk mengirimkan skor Anda!</p>
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]">Peringkat</TableHead>
+                <TableHead>Nama</TableHead>
+                <TableHead className="text-right">Skor</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {scores?.map((score, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{index + 1}</TableCell>
+                  <TableCell>{score.name}</TableCell>
+                  <TableCell className="text-right">{score.score}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </>
     );
   };
 
@@ -405,7 +413,7 @@ const AplikasiTerapiAntiKibul = () => {
                       variant="outline" 
                       className="w-full mb-4 flex items-center justify-center bg-green-500 text-white hover:bg-green-600 py-3 text-lg rounded-full transition-all duration-300 transform hover:scale-105"
                     >
-                      <Trophy className="mr-2 h-5 w-5" /> 🏆 Submit Skor 🏆
+                      🏆 Submit Skor 🏆
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
