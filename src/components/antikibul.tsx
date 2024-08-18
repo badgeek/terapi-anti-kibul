@@ -629,19 +629,19 @@ const AplikasiTerapiAntiKibul = () => {
                 </p>
               </div>
               <div className="flex flex-col gap-4">
-                <Button
-                  onClick={() => jawabPertanyaan(true)}
+              <Button
+                  onClick={() => jawabPertanyaan(false)}
                   variant="outline"
                   className="w-full flex items-center justify-center bg-green-500 text-white hover:bg-green-600 py-5 text-xl rounded-full transition-all duration-300 transform hover:scale-105"
                 >
-                  <CheckCircle className="mr-2 h-6 w-6" /> Ngibul Nih!
+                  <XCircle className="mr-2 h-6 w-6" /> Nggak Ngibul
                 </Button>
                 <Button
-                  onClick={() => jawabPertanyaan(false)}
+                  onClick={() => jawabPertanyaan(true)}
                   variant="outline"
                   className="w-full flex items-center justify-center bg-red-500 text-white hover:bg-red-600 py-5 text-xl rounded-full transition-all duration-300 transform hover:scale-105"
                 >
-                  <XCircle className="mr-2 h-6 w-6" /> Nggak Ngibul
+                  <CheckCircle className="mr-2 h-6 w-6" /> Ngibul Nih!
                 </Button>
               </div>
               <div className="flex justify-center items-center mt-6">
