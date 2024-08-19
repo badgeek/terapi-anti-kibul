@@ -307,8 +307,8 @@ const AplikasiTerapiAntiKibul = () => {
     const incorrectAnswers = totalQuestions - correctAnswers;
 
     return [
-      { name: 'Jawaban Benar', value: correctAnswers },
-      { name: 'Jawaban Salah', value: incorrectAnswers }
+      { name: 'Jawaban Salah', value: incorrectAnswers },
+      { name: 'Jawaban Benar', value: correctAnswers }
     ];
   };
 
