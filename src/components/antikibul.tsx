@@ -438,7 +438,7 @@ const AplikasiTerapiAntiKibul = () => {
                   <DialogHeader>
                     <DialogTitle>Daftar Skor Tertinggi</DialogTitle>
                     <DialogDescription>
-                      Berikut adalah daftar skor tertinggi dari semua pemain.
+                      Berikut adalah daftar skor tertinggi dari semua pasien.
                     </DialogDescription>
                   </DialogHeader>
                   <HighScoreList />
